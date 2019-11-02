@@ -35,7 +35,7 @@ print(x)'''
 
 #source = input() 
 
-coordinates = {'lat': 36.4089, 'lng': -78.3178}
+coordinates = {'lat': 36.4089, 'lng': 78.3178}
 
 # call the function nearby search with 
 # the parameters as longitude, latitude, radius and type of place
@@ -43,7 +43,7 @@ query_result = google_places.nearby_search(
         # lat_lng ={'lat': 46.1667, 'lng': -1.15}, 
         #lat_lng ={'lat': 36.4089, 'lng': -78.3178},
         lat_lng = coordinates, 
-        radius = 5000, 
+        radius = 50000, 
         types =[types.TYPE_HOSPITAL])
 
 
@@ -70,6 +70,7 @@ for place in query_result.places:
     url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
     
     # return response object 
+
     r = requests.get(url + 'origins=' + str(coordinates['lat']) + ',' + str(coordinates['lng']) +
                     '&destinations=' + str(place.geo_location['lat']) + ',' + str(place.geo_location['lng']) +
                     '&key=' + API_KEY)

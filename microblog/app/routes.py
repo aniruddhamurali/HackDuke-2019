@@ -21,7 +21,7 @@ def index():
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
 
-@app.route('/condition')
+@app.route('/condition', methods=['GET', 'POST'])
 def condition():
     form = ConditionForm()
     if form.validate_on_submit():
