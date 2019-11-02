@@ -7,7 +7,8 @@ import json
 # places in the google developers 
   
 # Use your own API key for making api request calls 
-API_KEY = 'AIzaSyDplP_jSYrYZWCYqfmG_lhFqxQRURA4jUU'
+#API_KEY = 'AIzaSyDplP_jSYrYZWCYqfmG_lhFqxQRURA4jUU'
+API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
   
 # Initialising the GooglePlaces constructor 
 google_places = GooglePlaces(API_KEY) 
@@ -20,7 +21,8 @@ query_result = google_places.nearby_search(
         # lat_lng ={'lat': 46.1667, 'lng': -1.15}, 
         lat_lng ={'lat': 28.4089, 'lng': 77.3178}, 
         radius = 5000, 
-        types =[types.TYPE_HOSPITAL]) 
+        types =[types.TYPE_HOSPITAL],
+        price_level = 2) 
   
 # If any attributions related with search results print them 
 if query_result.has_attributions: 
@@ -31,7 +33,8 @@ if query_result.has_attributions:
 for place in query_result.places: 
     # print(type(place)) 
     # place.get_details() 
-    print (place.name) 
+    print(place.name) 
     print("Latitude", place.geo_location['lat']) 
     print("Longitude", place.geo_location['lng']) 
+    print(place)
     print() 
