@@ -20,13 +20,13 @@ def index():
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
 
-@app.route('/login')
-def login():
-    form = LoginForm()
+@app.route('/condition')
+def condition():
+    form = ConditionForm()
     if form.validate_on_submit():
-        flash('Login requested for user {}, remember_me={}'.format(
+        flash('Condition={} requested, remember_me={}'.format(
             form.username.data, form.remember_me.data))
         return redirect('/index')
-    return render_template('login.html', title='Sign In', form=form)    
+    return render_template('condition.html', title='Condition', form=form)    
 
 # @app.route

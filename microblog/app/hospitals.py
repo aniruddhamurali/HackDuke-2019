@@ -33,14 +33,17 @@ x = r.json()
 # print the vale of x 
 print(x)'''
 
-source = input() 
+#source = input() 
+
+coordinates = {'lat': 36.4089, 'lng': -78.3178}
 
 # call the function nearby search with 
 # the parameters as longitude, latitude, radius and type of place
 query_result = google_places.nearby_search( 
         # lat_lng ={'lat': 46.1667, 'lng': -1.15}, 
-        lat_lng ={'lat': 28.4089, 'lng': 77.3178}, 
-        radius = 5000, 
+        #lat_lng ={'lat': 36.4089, 'lng': -78.3178},
+        lat_lng = coordinates, 
+        radius = 50000, 
         types =[types.TYPE_HOSPITAL])
 
 
@@ -49,6 +52,7 @@ query_result = google_places.nearby_search(
 if query_result.has_attributions: 
     print (query_result.html_attributions) 
   
+#print(query_result)
   
 # Iterate over the search results 
 for place in query_result.places: 
@@ -56,9 +60,9 @@ for place in query_result.places:
     # place.get_details() 
     '''print(place.name) 
     print("Latitude", place.geo_location['lat']) 
-    print("Longitude", place.geo_location['lng']) 
+    print("Longitude", place.geo_location['lng'])
     print(place)'''
-
+    
     # Take destination as input 
     dest = place.name 
     
@@ -66,9 +70,16 @@ for place in query_result.places:
     url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
     
     # return response object 
-    r = requests.get(url + 'origins=' + source +
+    '''r = requests.get(url + 'origins=' + source +
                     '&destinations=' + dest +
-                    '&key=' + API_KEY) 
+                    '&key=' + API_KEY)'''
+    r = requests.get(url + 'origins=' + str(coordinates['lat']) + ',' + str(coordinates['lng']) +
+                    '&destinations=' + str(place.geo_location['lat']) + ',' + str(place.geo_location['lng']) +
+                    '&key=' + API_KEY)
+
+    '''print(url + 'origins=' + str(coordinates['lat']) + ',' + str(coordinates['lng']) +
+                    '&destinations=' + str(place.geo_location['lat']) + ',' + str(place.geo_location['lng']) +
+                    '&key=' + API_KEY)'''  
                         
     # json method of response object 
     x = r.json() 
