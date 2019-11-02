@@ -1,6 +1,6 @@
 from flask import render_template
 from app import app
-from app.forms import LoginForm
+from app.forms import ConditionForm
 from flask import render_template, flash, redirect, url_for
 
 
