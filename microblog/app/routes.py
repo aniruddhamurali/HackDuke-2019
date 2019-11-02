@@ -28,5 +28,12 @@ def login():
     if form.validate_on_submit():
         flash('Login requested for user {}, remember_me={}'.format(
             form.username.data, form.remember_me.data))
+<<<<<<< HEAD
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
+=======
+        return redirect('/index')
+    return render_template('login.html', title='Sign In', form=form)    
+
+# @app.route
+>>>>>>> 073f31b2c90418d4d24ec1651f2679c8f85ef164
