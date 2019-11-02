@@ -21,8 +21,7 @@ query_result = google_places.nearby_search(
         # lat_lng ={'lat': 46.1667, 'lng': -1.15}, 
         lat_lng ={'lat': 28.4089, 'lng': 77.3178}, 
         radius = 5000, 
-        types =[types.TYPE_HOSPITAL],
-        price_level = 2) 
+        types =[types.TYPE_HOSPITAL]) 
   
 # If any attributions related with search results print them 
 if query_result.has_attributions: 
