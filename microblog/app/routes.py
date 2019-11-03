@@ -91,6 +91,20 @@ def search():
         return redirect(url_for('location'))
     return render_template('condition.html', title='Condition', form=form)
 
+@app.route('/determine_location')
+def determine_location():
+    return render_template("location.html")
+
+@app.route('/location', methods=['POST', 'GET'])
+def location():
+    if request.method == 'POST':
+        location = request.form
+        pippo = request.form.to_dict()
+        for x in pippo.values():
+            coordinates.append(x)
+        # return render_template('location.html', result=location)
+        time.sleep(8);
+        return redirect(url_for('search'))
 
 @app.route('/hospitals')
 def hospitals():
@@ -105,15 +119,23 @@ def hospitals():
     fWaitHospitals = []
     fCostHospitals = []
 
+    print("WAIT HOSPITAL LIST")
     for hospital in waitHospitals:
         if (my_var.lower() in hospital[-1]):
+            print(hospital)
             fWaitHospitals.append(hospital)
 
+    print()
+    print("COST HOSPITAL LIST")
     for hospital in costHospitals:
         if (my_var.lower() in hospital[-1]):
+            print(hospital)
             fCostHospitals.append(hospital)
 
-    getNearbyHospitals(34.5289, -86.8178, 50000, hospitalList, hospitalNames)
+    fWaitHospitals = sorted(fWaitHospitals, key=lambda x: x[1])
+    fCostHospitals = sorted(fCostHospitals, key=lambda x: x[1])
+
+    # getNearbyHospitals(34.5289, -86.8178, 50000, hospitalList, hospitalNames)
     return render_template('hospitals.html',
                            title='Hospitals',
                            wHospitals=fWaitHospitals,
@@ -145,21 +167,6 @@ def result():
         print(session['username'])
         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
         return render_template('form.html', result=result)
-
-@app.route('/determine_location')
-def determine_location():
-    return render_template("location.html")
-
-@app.route('/location', methods=['POST', 'GET'])
-def location():
-    if request.method == 'POST':
-        location = request.form
-        pippo = request.form.to_dict()
-        for x in pippo.values():
-            coordinates.append(x)
-        # return render_template('location.html', result=location)
-        time.sleep(8);
-        return redirect(url_for('search'))
 
 waitHospitals = []
 costHospitals = []
