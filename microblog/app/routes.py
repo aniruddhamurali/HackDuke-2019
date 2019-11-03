@@ -67,6 +67,24 @@ def hospitalProfile(hospitalName):
     # get the website, phone number, addy of hospital
     return render_template('baseHospital.html', hName=hospitalName)
 
+@app.route('/admin')
+def hospital_admin():
+    if 'username' in session:
+        return render_template("form.html")
+    redirect(url_for('index'))
+
+@app.route('/result',methods = ['POST', 'GET'])
+def result():
+   if request.method == 'POST':
+      result = request.form
+      treatmentArray = []
+      pippo =  request.form.to_dict()
+      for x in pippo.values():
+        treatmentArray.append(x)
+      print(session['username'])
+      '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
+      return render_template('form.html',result = result)
+
 #
 # Supplementary functions section
 #
