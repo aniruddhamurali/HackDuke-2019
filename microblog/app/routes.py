@@ -153,17 +153,6 @@ def result():
         print(session['username'])
         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
         return render_template('form.html', result=result)
-
-    if request.method == 'POST':
-      result = request.form
-      treatmentArray = []
-      pippo =  request.form.to_dict()
-      for x in pippo.values():
-        treatmentArray.append(x)
-      print(session['username'])
-      '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
-      return render_template('form.html',result = result)
-
 #
 # Supplementary functions section
 #
