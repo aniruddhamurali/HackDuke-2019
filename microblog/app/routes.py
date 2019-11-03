@@ -4,7 +4,7 @@ from flask import render_template, flash, redirect, url_for
 from flask_pymongo import pymongo
 
 client = pymongo.MongoClient("mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority")
-db = client.test_database
+db = client.inline
 
 @app.route('/')
 @app.route('/index')
@@ -26,8 +26,10 @@ def index():
 @app.route('/')
 @app.route('/condition', methods=['GET', 'POST'])
 def condition():
-    for entry in client.test_database.find():
-        print(entry)
+    items = db.HospitalCost
+    item = items.find()
+    # for entry in client.test_database.find():
+    #     print(entry)
     form = ConditionForm()
     if form.validate_on_submit():
         flash('Condition={}, remember_me={}'.format(
