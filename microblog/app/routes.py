@@ -15,8 +15,11 @@ API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
 
+
+'''
+Home page
+'''
 @app.route('/')
-# @app.route('/index')
 def index():
     user = {'username': 'Miguel'}
     posts = [
@@ -31,7 +34,44 @@ def index():
 
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
+<<<<<<< HEAD
 
+# Login
+@app.route('/login', methods=['POST','GET'])
+def login():
+    form = LoginForm()
+    users = db.Admins
+    login_user = users.find_one({'name' : request.form['username']})
+
+    if login_user:
+        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+            session['username'] = request.form['username']
+            return redirect(url_for('/'))
+
+    return 'Invalid username/password combination'
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        users = db.Admins
+        existing_user = users.find_one({'name' : request.form['username']})
+
+        if existing_user is None:
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
+            users.insert({'name' : request.form['username'], 'password' : hashpass})
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+        return 'That username already exists!'
+
+    return render_template('register.html')
+
+=======
+>>>>>>> ef7b86e4b1480efa316b4be7c88045958ad0f395
+
+'''
+Search function
+'''
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     items = db.HospitalCost
@@ -62,11 +102,22 @@ def hospitals():
     print("WAIT", waitHospitals, "COST", costHospitals)
     return render_template('hospitals.html', title='Hospitals', wHospitals=waitHospitals, cHospitals=costHospitals)
 
+
+'''
+Personalized hospital page
+'''
 @app.route('/hospital/<hName>')
 def hospitalProfile(hospitalName):
     # get the website, phone number, addy of hospital
     return render_template('baseHospital.html', hName=hospitalName)
 
+<<<<<<< HEAD
+
+'''
+#########################################################################################################################################
+#########################################################################################################################################
+'''
+=======
 @app.route('/admin')
 def hospital_admin():
     if 'username' in session:
@@ -84,11 +135,11 @@ def result():
       print(session['username'])
       '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
       return render_template('form.html',result = result)
+>>>>>>> ef7b86e4b1480efa316b4be7c88045958ad0f395
 
 #
 # Supplementary functions section
 #
-
 
 hospitalNames = []
 for hospital in hospitalList:
