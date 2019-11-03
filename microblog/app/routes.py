@@ -15,8 +15,11 @@ API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
 
+
+'''
+Home page
+'''
 @app.route('/')
-# @app.route('/index')
 def index():
     user = {'username': 'Miguel'}
     posts = [
@@ -32,6 +35,9 @@ def index():
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
 
+'''
+Search function
+'''
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     items = db.HospitalCost
@@ -52,15 +58,24 @@ def hospitals():
     print("WAIT", waitHospitals, "COST", costHospitals)
     return render_template('hospitals.html', title='Hospitals', wHospitals=waitHospitals, cHospitals=costHospitals)
 
+
+'''
+Personalized hospital page
+'''
 @app.route('/hospital/<hName>')
 def hospitalProfile(hospitalName):
     # get the website, phone number, addy of hospital
     return render_template('baseHospital.html', hName=hospitalName)
 
+
+'''
+#########################################################################################################################################
+#########################################################################################################################################
+'''
+
 #
 # Supplementary functions section
 #
-
 
 hospitalNames = []
 for hospital in hospitalList:
