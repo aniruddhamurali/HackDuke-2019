@@ -21,7 +21,9 @@ for hospital in hospitals.find():
     tagsToAdd = []
     for i in range(randNum):
         newRand = random.randint(0, 8)
-        tagsToAdd.append(ref[newRand])
+        if ref[newRand] not in tagsToAdd:
+            tagsToAdd.append(ref[newRand])
+        #tagsToAdd.append(ref[newRand])
     print(hospital["HospitalName"], tagsToAdd)
     hospitals.update_one(
         {"HospitalName": hospital["HospitalName"]},
