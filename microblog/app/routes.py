@@ -1,11 +1,12 @@
 from app import app
 from app.forms import ConditionForm
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, session
 from flask_pymongo import pymongo
 from googleplaces import GooglePlaces, ranking, types, lang
 import json
 import requests
 import random
+import bcrypt
 
 client = pymongo.MongoClient("mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority")
 db = client.inline
@@ -33,7 +34,36 @@ def index():
         }
 
     ]
-    return render_template('index.html', title='Home', user=user, posts=posts)
+    return render_template('loginForm.html', title='Home', user=user, posts=posts)
+
+@app.route('/login', methods=['POST'])
+def login():
+    users = db.Admins
+    login_user = users.find_one({'name' : request.form['username']})
+
+    if login_user:
+        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+    return 'Invalid username/password combination'
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        users = db.Admins
+        existing_user = users.find_one({'name' : request.form['username']})
+
+        if existing_user is None:
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
+            users.insert({'name' : request.form['username'], 'password' : hashpass})
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+        return 'That username already exists!'
+
+    return render_template('register.html')
+
 
 '''
 Search function
@@ -50,7 +80,7 @@ def search():
             form.condition.data, form.remember_me.data))
         return redirect(url_for('hospitals'))
     return render_template('condition.html', title='Condition', form=form)
-    
+
 @app.route('/hospitals')
 def hospitals():
     my_var = request.args.get('my_var', None)
@@ -140,9 +170,9 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
         # we still register it, insert based on waiting time
         else:
             ref = {
-                0: "urgent_care", 
-                1: "blood_loss", 
-                2: "mental_health", 
+                0: "urgent_care",
+                1: "blood_loss",
+                2: "mental_health",
                 3: "infection",
                 4: "pediatrics",
                 5: "poison",
@@ -155,7 +185,7 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
             for i in range(randNum):
                 newRand = random.randint(0, 8)
                 tagsToAdd.append(ref[newRand])
-            
+
             waitTuple = (
                 name,
                 time,
