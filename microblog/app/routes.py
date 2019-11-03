@@ -43,6 +43,12 @@ def index():
     return render_template('index.html', title='Home', user=user, posts=posts)
 
 # Login
+@app.route('/loginlink')
+def loginLink():
+    if 'username' in session:
+        return 'You are logged in as ' + session['username']
+    return render_template('loginForm.html')
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     users = db.Admins
@@ -88,7 +94,9 @@ def search():
     if form.validate_on_submit():
         flash('Condition={}, remember_me={}'.format(form.condition.data,
                                                     form.remember_me.data))
-        return redirect(url_for('location'))
+        # return redirect(url_for('determine_location'))
+        redirect(url_for('determine_location'))
+        return render_template('condition.html', title='Condition', form=form)
     return render_template('condition.html', title='Condition', form=form)
 
 @app.route('/determine_location')
@@ -156,6 +164,17 @@ def hospital_admin():
         return render_template("form.html")
     redirect(url_for('index'))
 
+# @app.route('/result', methods=['POST', 'GET'])
+# def result():
+#     if request.method == 'POST':
+#         result = request.form
+#         treatmentArray = []
+#         pippo = request.form.to_dict()
+#         for x in pippo.values():
+#             treatmentArray.append(x)
+#         print(session['username'])
+#         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
+#         return render_template('form.html', result=result)
 @app.route('/result', methods=['POST', 'GET'])
 def result():
     if request.method == 'POST':
@@ -165,9 +184,9 @@ def result():
         for x in pippo.values():
             treatmentArray.append(x)
         print(session['username'])
-        '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
+        db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray}, upsert = True)
         return render_template('form.html', result=result)
-
+        
 waitHospitals = []
 costHospitals = []
 
