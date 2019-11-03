@@ -9,9 +9,10 @@
 </head>
 
 <body>
+    <!-- This is the navbar, can be improved -->
     <div>Microblog:
-        <a href="/index">Home</a>
-        <a href="/condition">Condition</a>
+        <a href="/">Home</a>
+        <a href="/search">Search</a>
     </div>
     <hr> {% with messages = get_flashed_messages() %} {% if messages %}
     <ul>
@@ -19,6 +20,8 @@
         <li> {{ message }}</li>
         {% endfor %}
     </ul>
+    <!-- End navbar -->
+    <!-- And then the actual content -->
     {% endif %} {% endwith %} {% block content%}{% endblock %}
 </body>
 

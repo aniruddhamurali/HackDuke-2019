@@ -14,9 +14,8 @@ API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
 
-@app.route('/')
-
-@app.route('/index')
+@app.route('/', methods=['GET'])
+# @app.route('/index')
 def index():
     user = {'username': 'Miguel'}
     posts = [
@@ -32,8 +31,8 @@ def index():
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
 
-@app.route('/condition', methods=['GET', 'POST'])
-def condition():
+@app.route('/search', methods=['GET', 'POST'])
+def search():
     items = db.HospitalCost
     item = items.find()
     # for entry in client.test_database.find():
@@ -45,8 +44,7 @@ def condition():
         return redirect(url_for('hospitals'))
     return render_template('condition.html', title='Condition', form=form)
     
-
-@app.route('/hospitals')
+@app.route('/hospitals', methods=['GET'])
 def hospitals():
     my_var = request.args.get('my_var', None)
     getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
