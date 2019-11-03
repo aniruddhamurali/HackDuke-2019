@@ -1,11 +1,12 @@
 from app import app
 from app.forms import ConditionForm
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, session
 from flask_pymongo import pymongo
 from googleplaces import GooglePlaces, ranking, types, lang
 import json
 import requests
 import random
+import bcrypt
 
 client = pymongo.MongoClient("mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority")
 db = client.inline
@@ -14,6 +15,7 @@ hospitalList = db.HospitalCost.find()
 API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
+globalUser = "Test"
 
 @app.route('/')
 # @app.route('/index')
@@ -32,6 +34,49 @@ def index():
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
 
+@app.route('/login', methods=['POST'])
+def login():
+    users = db.Admins
+    login_user = users.find_one({'name' : request.form['username']})
+
+    if login_user:
+        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password']) == login_user['password']:
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+    return 'Invalid username/password combination'
+
+@app.route('/loginlink')
+def loginlink():
+    if 'username' in session:
+        if db.Admins.find_one({'name' : session['username']}):
+            globalUser = session['username']
+            return 'You are logged in as ' + session['username']
+
+    return render_template('loginForm.html')
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        users = db.Admins
+        existing_user = users.find_one({'name' : request.form['username']})
+
+        if existing_user is None:
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
+            users.insert({'name' : request.form['username'], 'password' : hashpass})
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+        return 'That username already exists!'
+
+    return render_template('register.html')
+
+@app.route('/signout')
+def signout():
+    if 'username' in session:
+        session['username'] = None
+    redirect(url_for('index'))
+
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     items = db.HospitalCost
@@ -44,7 +89,7 @@ def search():
             form.condition.data, form.remember_me.data))
         return redirect(url_for('hospitals'))
     return render_template('condition.html', title='Condition', form=form)
-    
+
 @app.route('/hospitals')
 def hospitals():
     my_var = request.args.get('my_var', None)
@@ -61,7 +106,8 @@ def hospitalProfile(hospitalName):
 def hospital_admin():
     if 'username' in session:
         return render_template("form.html")
-    redirect(url_for('index'))
+
+    return redirect(url_for('index'))
 
 @app.route('/result',methods = ['POST', 'GET'])
 def result():
@@ -71,8 +117,8 @@ def result():
       pippo =  request.form.to_dict()
       for x in pippo.values():
         treatmentArray.append(x)
-      print(session['username'])
-      '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
+      print(db.Admins.find({"name": globalUser}))
+      db.Admins.update( {"name": globalUser}, {"treatments":treatmentArray})
       return render_template('form.html',result = result)
 
 #
@@ -143,9 +189,9 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
         # we still register it, insert based on waiting time
         else:
             ref = {
-                0: "urgent_care", 
-                1: "blood_loss", 
-                2: "mental_health", 
+                0: "urgent_care",
+                1: "blood_loss",
+                2: "mental_health",
                 3: "infection",
                 4: "pediatrics",
                 5: "poison",
@@ -158,7 +204,7 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
             for i in range(randNum):
                 newRand = random.randint(0, 8)
                 tagsToAdd.append(ref[newRand])
-            
+
             waitTuple = (
                 name,
                 time,
