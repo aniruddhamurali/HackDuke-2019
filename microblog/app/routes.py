@@ -9,11 +9,55 @@ import requests
 client = pymongo.MongoClient("mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority")
 db = client.inline
 hospitalList = db.HospitalCost.find()
-
 # Use your own API key for making api request calls
 API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
+
+@app.route('/', methods=['GET'])
+# @app.route('/index')
+def index():
+    user = {'username': 'Miguel'}
+    posts = [
+        {
+            'author': {'username': 'John'},
+            'body': 'Beautiful day in Portland!'
+        },
+        {
+            'author': {'username': 'Susan'},
+            'body': 'The Avengers movie was so cool!'
+        }
+
+    ]
+    return render_template('index.html', title='Home', user=user, posts=posts)
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    items = db.HospitalCost
+    item = items.find()
+    # for entry in client.test_database.find():
+    #     print(entry)
+    form = ConditionForm()
+    if form.validate_on_submit():
+        flash('Condition={}, remember_me={}'.format(
+            form.condition.data, form.remember_me.data))
+        return redirect(url_for('hospitals'))
+    return render_template('condition.html', title='Condition', form=form)
+    
+@app.route('/hospitals', methods=['GET'])
+def hospitals():
+    my_var = request.args.get('my_var', None)
+    getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
+    print("WAIT", waitHospitals, "COST", costHospitals)
+    for hospital in waitHospitals:
+        print(hospital[0])
+    return render_template('hospitals.html', title='Hospitals', wHospitals=waitHospitals, cHospitals=costHospitals)
+
+
+#
+# Supplementary functions section
+#
+
 
 hospitalNames = []
 for hospital in hospitalList:
@@ -86,44 +130,3 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
                 distance,
             )
             waitHospitals.append(waitTuple)
-
-@app.route('/')
-
-@app.route('/index')
-def index():
-    user = {'username': 'Miguel'}
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-
-    ]
-    return render_template('index.html', title='Home', user=user, posts=posts)
-
-@app.route('/condition', methods=['GET', 'POST'])
-def condition():
-    items = db.HospitalCost
-    item = items.find()
-    # for entry in client.test_database.find():
-    #     print(entry)
-    form = ConditionForm()
-    if form.validate_on_submit():
-        flash('Condition={}, remember_me={}'.format(
-            form.condition.data, form.remember_me.data))
-        return redirect(url_for('hospitals'))
-    return render_template('condition.html', title='Condition', form=form)
-    
-
-@app.route('/hospitals')
-def hospitals():
-    my_var = request.args.get('my_var', None)
-    getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
-    print("WAIT", waitHospitals, "COST", costHospitals)
-    for hospital in waitHospitals:
-        print(hospital[0])
-    return render_template('hospitals.html', title='Hospitals', wHospitals=waitHospitals, cHospitals=costHospitals)
