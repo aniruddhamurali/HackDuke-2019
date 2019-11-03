@@ -20,13 +20,14 @@ API_KEY2 = 'AIzaSyAzj2-Frms17wZPXVkL-YkvLgxZqikKOj4'
 
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
-google_maps = GoogleMaps(API_KEY2)
+#google_maps = GoogleMaps(API_KEY2)
 
-address = "New York City Wall Street 12"
+#address = "New York City Wall Street 12"
+#globalName = None
 
-google_maps = GoogleMaps(API_KEY2)
+#google_maps = GoogleMaps(API_KEY2)
 
-location = google_maps.search(location=address)  # sends search to Google Maps.
+#location = google_maps.search(location=address)  # sends search to Google Maps.
 
 '''
 Home page
@@ -46,8 +47,6 @@ def index():
         'body': 'The Avengers movie was so cool!'
     }]
     return render_template('index.html', title='Home', user=user, posts=posts)
-<<<<<<< HEAD
-=======
 
 # Login
 @app.route('/login', methods=['POST', 'GET'])
@@ -81,7 +80,6 @@ def register():
         return 'That username already exists!'
     return render_template('register.html')
 
->>>>>>> cfef24a8407cf60218f3eb25bc2f85b525690bd2
 
 '''
 Search function
@@ -136,7 +134,6 @@ def hospitalProfile(hospitalName):
     # get the website, phone number, addy of hospital
     return render_template('baseHospital.html', hName=hospitalName)
 
-<<<<<<< HEAD
 @app.route('/admin')
 def hospital_admin():
     if 'username' in session:
@@ -151,28 +148,9 @@ def result():
       pippo =  request.form.to_dict()
       for x in pippo.values():
         treatmentArray.append(x)
-      print(session['username'])
-      '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
+      db.Admins.update( {"name": globalName}, {"treatments":treatmentArray})
       return render_template('form.html',result = result)
-=======
 
-'''
-#########################################################################################################################################
-#########################################################################################################################################
-'''
->>>>>>> cfef24a8407cf60218f3eb25bc2f85b525690bd2
-
-@app.route('/result', methods=['POST', 'GET'])
-def result():
-    if request.method == 'POST':
-        result = request.form
-        treatmentArray = []
-        pippo = request.form.to_dict()
-        for x in pippo.values():
-            treatmentArray.append(x)
-        print(session['username'])
-        '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
-        return render_template('form.html', result=result)
 #
 # Supplementary functions section
 #
