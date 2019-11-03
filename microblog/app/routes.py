@@ -5,6 +5,7 @@ from flask_pymongo import pymongo
 from googleplaces import GooglePlaces, ranking, types, lang
 import json
 import requests
+import random
 
 client = pymongo.MongoClient("mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority")
 db = client.inline
@@ -49,8 +50,6 @@ def hospitals():
     my_var = request.args.get('my_var', None)
     getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
     print("WAIT", waitHospitals, "COST", costHospitals)
-    for hospital in waitHospitals:
-        print(hospital[0])
     return render_template('hospitals.html', title='Hospitals', wHospitals=waitHospitals, cHospitals=costHospitals)
 
 
@@ -121,6 +120,23 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
         # was found in our small set of hospitals
         # we still register it, insert based on waiting time
         else:
+            ref = {
+                0: "urgent_care", 
+                1: "blood_loss", 
+                2: "mental_health", 
+                3: "infection",
+                4: "pediatrics",
+                5: "poison",
+                6: "rash_redness",
+                7: "sickness",
+                8: "sports_injuries"
+            }
+            randNum = random.randint(3, 9)
+            tagsToAdd = []
+            for i in range(randNum):
+                newRand = random.randint(0, 8)
+                tagsToAdd.append(ref[newRand])
+            
             waitTuple = (
                 name,
                 time,
@@ -128,5 +144,6 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
                 float(place.geo_location['lat']),
                 float(place.geo_location['lng']),
                 distance,
+                tagsToAdd
             )
             waitHospitals.append(waitTuple)
