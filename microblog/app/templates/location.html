@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <html>
+
 <body>
 
-<p id="demo"></p>
+  <p id="demo"></p>
+  <form action="http://localhost:5000/location" method="POST">
+    <p>Select every treatment your hospital is able to provide.</p>
 
-<script>
-var x = document.getElementById("demo");
-
-if (navigator.geolocation) {
-   navigator.geolocation.getCurrentPosition(showPosition);
- } else {
-  x.innerHTML = "Geolocation is not supported by this browser.";
- }
-
-function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude +
-  "<br>Longitude: " + position.coords.longitude;
-}
-</script>
+    Latitude: <input type="text" id="lat" name="latitude" value="" /><br />
+    Longitude: <input type="text" id="lng" name="longitude" value="" /><br />
+    <input type="submit" value="SUBMIT" />
+  </form>
 
 </body>
+
+<script>
+  var x = document.getElementById("demo");
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+
+  function showPosition(position) {
+    x.innerHTML = "Latitude: " + position.coords.latitude +
+      "<br>Longitude: " + position.coords.longitude;
+    console.log(position.coords.latitude);
+    document.getElementById("lat").value = position.coords.latitude;
+    console.log(document.getElementById("lat").value)
+    document.getElementById("lng").value = position.coords.longitude;
+  }
+</script>
+
 </html>

@@ -14,19 +14,13 @@ client = pymongo.MongoClient(
     "mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority"
 )
 db = client.inline
+coordinates = []
+
 # Use your own API key for making api request calls
 API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
-API_KEY2 = 'AIzaSyAzj2-Frms17wZPXVkL-YkvLgxZqikKOj4'
 
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
-google_maps = GoogleMaps(API_KEY2)
-
-address = "New York City Wall Street 12"
-
-google_maps = GoogleMaps(API_KEY2)
-
-location = google_maps.search(location=address)  # sends search to Google Maps.
 
 '''
 Home page
@@ -93,7 +87,7 @@ def search():
     if form.validate_on_submit():
         flash('Condition={}, remember_me={}'.format(form.condition.data,
                                                     form.remember_me.data))
-        return redirect(url_for('hospitals'))
+        return redirect(url_for('location'))
     return render_template('condition.html', title='Condition', form=form)
 
 
@@ -106,7 +100,7 @@ def hospitals():
     for hospital in hospitalList:
         hospitalNames.append(hospital['HospitalName'].lower())
 
-    getNearbyHospitals(34.5289, -86.8178, 50000, hospitalList, hospitalNames)
+    getNearbyHospitals(coordinates[0], coordinates[1], 50000, hospitalList, hospitalNames)
     fWaitHospitals = []
     fCostHospitals = []
 
@@ -140,7 +134,6 @@ def hospital_admin():
         return render_template("form.html")
     redirect(url_for('index'))
 
-
 @app.route('/result', methods=['POST', 'GET'])
 def result():
     if request.method == 'POST':
@@ -152,10 +145,19 @@ def result():
         print(session['username'])
         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
         return render_template('form.html', result=result)
-#
-# Supplementary functions section
-#
 
+@app.route('/determine_location')
+def determine_location():
+    return render_template("location.html")
+
+@app.route('/location', methods=['POST', 'GET'])
+def location():
+    if request.method == 'POST':
+        result = request.form
+        pippo = request.form.to_dict()
+        for x in pippo.values():
+            coordinates.append(x)
+        return render_template('location.html', result=location)
 
 waitHospitals = []
 costHospitals = []
