@@ -14,12 +14,13 @@ client = pymongo.MongoClient(
     "mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority"
 )
 db = client.inline
+coordinates = []
+
 # Use your own API key for making api request calls
 API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
-
 
 '''
 Home page
@@ -40,10 +41,11 @@ def index():
     }]
     return render_template('index.html', title='Home', user=user, posts=posts)
 
-@app.route('/login', methods=['POST'])
+# Login
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     users = db.Admins
-    login_user = users.find_one({'name' : request.form['username']})
+    login_user = users.find_one({'name': request.form['username']})
 
     if login_user:
         if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password']) == login_user['password']:
@@ -52,24 +54,18 @@ def login():
 
     return 'Invalid username/password combination'
 
-@app.route('/loginlink')
-def loginlink():
-    if 'username' in session:
-        if db.Admins.find_one({'name' : session['username']}):
-            globalUser = session['username']
-            return 'You are logged in as ' + session['username']
-
-    return render_template('loginForm.html')
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
         users = db.Admins
-        existing_user = users.find_one({'name' : request.form['username']})
+        existing_user = users.find_one({'name': request.form['username']})
 
         if existing_user is None:
-            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
-            users.insert({'name' : request.form['username'], 'password' : hashpass})
+            hashpass = bcrypt.hashpw(
+                request.form['pass'].encode('utf-8'), bcrypt.gensalt())
+            users.insert(
+                {'name': request.form['username'], 'password': hashpass})
             session['username'] = request.form['username']
             return redirect(url_for('index'))
 
@@ -77,11 +73,6 @@ def register():
         return 'That username already exists!'
     return render_template('register.html')
 
-@app.route('/signout')
-def signout():
-    if 'username' in session:
-        session['username'] = None
-    redirect(url_for('index'))
 
 '''
 Search function
@@ -96,7 +87,7 @@ def search():
     if form.validate_on_submit():
         flash('Condition={}, remember_me={}'.format(form.condition.data,
                                                     form.remember_me.data))
-        return redirect(url_for('hospitals'))
+        return redirect(url_for('location'))
     return render_template('condition.html', title='Condition', form=form)
 
 
@@ -109,7 +100,7 @@ def hospitals():
     for hospital in hospitalList:
         hospitalNames.append(hospital['HospitalName'].lower())
 
-    getNearbyHospitals(34.5289, -86.8178, 50000, hospitalList, hospitalNames)
+    getNearbyHospitals(coordinates[0], coordinates[1], 50000, hospitalList, hospitalNames)
     fWaitHospitals = []
     fCostHospitals = []
 
@@ -121,11 +112,12 @@ def hospitals():
         if (my_var.lower() in hospital[-1]):
             fCostHospitals.append(hospital)
 
-    getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
+    getNearbyHospitals(34.5289, -86.8178, 50000, hospitalList, hospitalNames)
     return render_template('hospitals.html',
                            title='Hospitals',
                            wHospitals=fWaitHospitals,
                            cHospitals=fCostHospitals)
+
 
 '''
 Personalized hospital page
@@ -141,7 +133,6 @@ def hospital_admin():
         return render_template("form.html")
     redirect(url_for('index'))
 
-
 @app.route('/result', methods=['POST', 'GET'])
 def result():
     if request.method == 'POST':
@@ -153,9 +144,19 @@ def result():
         print(session['username'])
         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
         return render_template('form.html', result=result)
-#
-# Supplementary functions section
-#
+
+@app.route('/determine_location')
+def determine_location():
+    return render_template("location.html")
+
+@app.route('/location', methods=['POST', 'GET'])
+def location():
+    if request.method == 'POST':
+        location = request.form
+        pippo = request.form.to_dict()
+        for x in pippo.values():
+            coordinates.append(x)
+        return render_template('location.html', result=location)
 
 waitHospitals = []
 costHospitals = []
@@ -168,8 +169,8 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
         'lat': latitude,
         'lng': longitude
     },
-                                               radius=sRadius,
-                                               types=[types.TYPE_HOSPITAL])
+        radius=sRadius,
+        types=[types.TYPE_HOSPITAL])
     # If any attributions related with search results print them
     '''if query_result.has_attributions:
         print(query_result.html_attributions)'''
@@ -179,7 +180,7 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
         name = place.name
         # url variable to store google maps' url
         url = 'https://maps.googleapis.com/maps/api/distancematrix/json?'
-        #print(place.geo_location['lat'], place.geo_location['lng'])
+        # print(place.geo_location['lat'], place.geo_location['lng'])
         r = requests.get(url + 'origins=' + str(latitude) + ',' +
                          str(longitude) + '&destinations=' +
                          str(place.geo_location['lat']) + ',' +
