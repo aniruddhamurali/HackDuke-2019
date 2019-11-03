@@ -1,6 +1,6 @@
 from app import app
 from app.forms import ConditionForm
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, session
 from flask_pymongo import pymongo
 from googleplaces import GooglePlaces, ranking, types, lang
 from geolocation.main import GoogleMaps
@@ -8,6 +8,7 @@ from geolocation.distance_matrix.client import DistanceMatrixApiClient
 import json
 import requests
 import random
+import bcrypt
 
 client = pymongo.MongoClient(
     "mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority"
@@ -49,14 +50,13 @@ def index():
 # Login
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    form = LoginForm()
     users = db.Admins
     login_user = users.find_one({'name': request.form['username']})
 
     if login_user:
-        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password']) == login_user['password']:
             session['username'] = request.form['username']
-            return redirect(url_for('/'))
+            return redirect(url_for('index'))
 
     return 'Invalid username/password combination'
 
@@ -74,6 +74,8 @@ def register():
                 {'name': request.form['username'], 'password': hashpass})
             session['username'] = request.form['username']
             return redirect(url_for('index'))
+
+
         return 'That username already exists!'
     return render_template('register.html')
 
@@ -150,17 +152,6 @@ def result():
         print(session['username'])
         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
         return render_template('form.html', result=result)
-
-    if request.method == 'POST':
-        result = request.form
-        treatmentArray = []
-        pippo = request.form.to_dict()
-        for x in pippo.values():
-            treatmentArray.append(x)
-        print(session['username'])
-        '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
-        return render_template('form.html', result=result)
-
 #
 # Supplementary functions section
 #
