@@ -7,8 +7,13 @@
     <p>
         {{ form.condition.label }}<br>
         {{ form.condition(size=32) }}
+        {% for error in form.condition.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
     </p>
-    <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+    <p>
+        {{ form.remember_me() }}
+        {{ form.remember_me.label }}</p>
     <p>{{ form.submit() }}</p>
 </form>
 {% endblock %}

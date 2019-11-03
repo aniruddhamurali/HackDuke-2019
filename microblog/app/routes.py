@@ -25,7 +25,7 @@ def index():
 def condition():
     form = ConditionForm()
     if form.validate_on_submit():
-        flash('Condition={} requested, remember_me={}'.format(
-            form.username.data, form.remember_me.data))
+        flash('Condition={}, remember_me={}'.format(
+            form.condition.data, form.remember_me.data))
         return redirect(url_for('index'))
     return render_template('condition.html', title='Sign In', form=form)
