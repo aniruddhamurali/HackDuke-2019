@@ -69,6 +69,7 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
                         float(place.geo_location['lng']),  # longitude
                         distance,              # distance
                         costHospital['AvgOutOfPocketCost'],  # cost
+                        costHospital['tags']    # filters
                     )
                     costHospitals.append(costTuple)
                     break
