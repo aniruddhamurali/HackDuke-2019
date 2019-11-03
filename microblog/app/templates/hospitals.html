@@ -1,15 +1,17 @@
 {% extends "base.html" %} {% block content %}
 <h1>Hospitals</h1>
-{% for hospital in hospitals %}
+{% for hospital in wHospitals %}
 <div>
     <p>
-        Hospital: {{ hospital.HospitalName }}
-    </p>
-    <p>
-        Latitude: {{ '%f' % hospital.Latitude }}
-    </p>
-    <p>
-        Longitude: {{ '%f' % hospital.Longitude }}
+        Wait Hospital: {{ hospital[0] }}
     </p>
 </div>
-{% endfor %} {% endblock %}
+{% endfor %} 
+{% for hospital in cHospitals %}
+<div>
+    <p>
+        Cost Hospital: {{ hospital[0] }}
+    </p>
+</div>
+{% endfor %}
+{% endblock %}

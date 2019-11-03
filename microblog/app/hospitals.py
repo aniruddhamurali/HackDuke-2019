@@ -16,7 +16,7 @@ google_places = GooglePlaces(API_KEY)
 
 # coordinates = {'lat': 36.4089, 'lng': -78.3178}
 testLat = 33.25289
-testLng = -86.8178
+testLng = 56.8178
 # start at 10000, then increment by like 1000 until you get some hospitals
 searchRadius = 50000
 # searchRadius = 50000
