@@ -48,7 +48,17 @@ def search():
 @app.route('/hospitals')
 def hospitals():
     my_var = request.args.get('my_var', None)
-    getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
+    waitList = []
+    costList = []
+    for waitHospital in waitHospitals:
+        if my_var.lower() in waitHospital[-1]:
+            waitList.append(waitHospital)
+    for costHospital in costHospitals:
+        if my_var.lower() in costHospital[-1]:
+            waitList.append(costHospital)
+    #getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
+    getNearbyHospitals(34.5289,-86.8178, 50000, waitList, hospitalNames)
+    getNearbyHospitals(34.5289,-86.8178, 50000, costList, hospitalNames)
     print("WAIT", waitHospitals, "COST", costHospitals)
     return render_template('hospitals.html', title='Hospitals', wHospitals=waitHospitals, cHospitals=costHospitals)
 
