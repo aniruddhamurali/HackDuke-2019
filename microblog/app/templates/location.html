@@ -5,11 +5,11 @@
 
   <p id="demo"></p>
   <form name="coordinates" action="http://localhost:5000/location" method="POST">
-    <p>Select every treatment your hospital is able to provide.</p>
+    <p>Currently finding your location...</p>
+    <img src="static/images/giphy.gif">
 
-    Latitude: <input type="text" id="lat" name="latitude" value="" /><br />
-    Longitude: <input type="text" id="lng" name="longitude" value="" /><br />
-    <input type="submit" value="SUBMIT" />
+    <input type="hidden" id="lat" name="latitude" value="" /><br />
+    <input type="hidden" id="lng" name="longitude" value="" /><br />
   </form>
 
 </body>
