@@ -51,9 +51,9 @@ def hospitals():
     waitList = []
     costList = []
     for waitHospital in waitHospitals:
-        if my_var.lower() in waitHospital[-1]:
+        if my_var.lower() in waitHospital[-1] and waitHospital not in waitHospitals:
             waitList.append(waitHospital)
-    for costHospital in costHospitals:
+    for costHospital in costHospitals and costHospital not in costHospitals:
         if my_var.lower() in costHospital[-1]:
             waitList.append(costHospital)
     #getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
@@ -167,7 +167,8 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
             tagsToAdd = []
             for i in range(randNum):
                 newRand = random.randint(0, 8)
-                tagsToAdd.append(ref[newRand])
+                if ref[newRand] not in tagsToAdd:
+                    tagsToAdd.append(ref[newRand])
             
             waitTuple = (
                 name,
