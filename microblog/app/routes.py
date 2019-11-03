@@ -180,7 +180,7 @@ def result():
         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
         return render_template('form.html', result=result)
 
-   if request.method == 'POST':
+    if request.method == 'POST':
       result = request.form
       treatmentArray = []
       pippo =  request.form.to_dict()
