@@ -9,6 +9,7 @@ import json
 import requests
 import random
 import bcrypt
+import time
 
 client = pymongo.MongoClient(
     "mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority"
@@ -156,7 +157,9 @@ def location():
         pippo = request.form.to_dict()
         for x in pippo.values():
             coordinates.append(x)
-        return render_template('location.html', result=location)
+        # return render_template('location.html', result=location)
+        time.sleep(5);
+        return redirect(url_for('search'))
 
 waitHospitals = []
 costHospitals = []
