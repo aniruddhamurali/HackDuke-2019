@@ -31,6 +31,38 @@ def index():
 
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
+<<<<<<< HEAD
+=======
+
+@app.route('/login', methods=['POST'])
+def login():
+    users = db.Admins
+    login_user = users.find_one({'name' : request.form['username']})
+
+    if login_user:
+        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+    return 'Invalid username/password combination'
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        users = db.Admins
+        existing_user = users.find_one({'name' : request.form['username']})
+
+        if existing_user is None:
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
+            users.insert({'name' : request.form['username'], 'password' : hashpass})
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+        return 'That username already exists!'
+
+    return render_template('register.html')
+
+>>>>>>> fa2a8c2ac59ad6a2d12a82995a304cd1fcc2f7d4
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
