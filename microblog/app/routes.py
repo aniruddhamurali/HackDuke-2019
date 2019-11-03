@@ -65,21 +65,11 @@ def register():
             users.insert({'name' : request.form['username'], 'password' : hashpass})
             session['username'] = request.form['username']
             return redirect(url_for('index'))
-
-<<<<<<< HEAD
-
-=======
         return 'That username already exists!'
-
     return render_template('register.html')
-
-=======
->>>>>>> ef7b86e4b1480efa316b4be7c88045958ad0f395
-
 '''
 Search function
 '''
->>>>>>> 10d71d0297f245d215d0e0687ecdea65d688c5c5
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     items = db.HospitalCost
@@ -97,6 +87,7 @@ def search():
 @app.route('/hospitals')
 def hospitals():
     my_var = request.args.get('my_var', None)
+<<<<<<< HEAD
     hospitalList = db.HospitalCost.find()
     hospitalNames = []
     
@@ -115,6 +106,7 @@ def hospitals():
         if (my_var.lower() in hospital[-1]):
             fCostHospitals.append(hospital)
 
+    getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
     return render_template('hospitals.html',
                            title='Hospitals',
                            wHospitals=fWaitHospitals,
