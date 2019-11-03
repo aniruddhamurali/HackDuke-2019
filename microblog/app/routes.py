@@ -19,8 +19,11 @@ API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
 
+
+'''
+Home page
+'''
 @app.route('/')
-# @app.route('/index')
 def index():
     user = {'username': 'Miguel'}
     posts = [{
@@ -35,8 +38,48 @@ def index():
         'body': 'The Avengers movie was so cool!'
     }]
     return render_template('index.html', title='Home', user=user, posts=posts)
+<<<<<<< HEAD
 
+# Login
+@app.route('/login', methods=['POST','GET'])
+def login():
+    form = LoginForm()
+    users = db.Admins
+    login_user = users.find_one({'name' : request.form['username']})
 
+    if login_user:
+        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+            session['username'] = request.form['username']
+            return redirect(url_for('/'))
+
+    return 'Invalid username/password combination'
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        users = db.Admins
+        existing_user = users.find_one({'name' : request.form['username']})
+
+        if existing_user is None:
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
+            users.insert({'name' : request.form['username'], 'password' : hashpass})
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+<<<<<<< HEAD
+
+=======
+        return 'That username already exists!'
+
+    return render_template('register.html')
+
+=======
+>>>>>>> ef7b86e4b1480efa316b4be7c88045958ad0f395
+
+'''
+Search function
+'''
+>>>>>>> 10d71d0297f245d215d0e0687ecdea65d688c5c5
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     items = db.HospitalCost
@@ -77,12 +120,13 @@ def hospitals():
                            wHospitals=fWaitHospitals,
                            cHospitals=fCostHospitals)
 
-
+'''
+Personalized hospital page
+'''
 @app.route('/hospital/<hName>')
 def hospitalProfile(hospitalName):
     # get the website, phone number, addy of hospital
     return render_template('baseHospital.html', hName=hospitalName)
-
 
 @app.route('/admin')
 def hospital_admin():
@@ -103,6 +147,15 @@ def result():
         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
         return render_template('form.html', result=result)
 
+   if request.method == 'POST':
+      result = request.form
+      treatmentArray = []
+      pippo =  request.form.to_dict()
+      for x in pippo.values():
+        treatmentArray.append(x)
+      print(session['username'])
+      '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
+      return render_template('form.html',result = result)
 
 #
 # Supplementary functions section
@@ -186,7 +239,17 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
                 newRand = random.randint(0, 8)
                 if ref[newRand] not in tagsToAdd:
                     tagsToAdd.append(ref[newRand])
-
+            
             waitTuple = (name, time, address, float(place.geo_location['lat']),
                          float(place.geo_location['lng']), distance, tagsToAdd)
+            
+            waitTuple = (
+                name,
+                time,
+                address,
+                float(place.geo_location['lat']),
+                float(place.geo_location['lng']),
+                distance,
+                tagsToAdd
+            )
             waitHospitals.append(waitTuple)
