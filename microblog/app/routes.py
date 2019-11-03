@@ -34,7 +34,6 @@ def index():
 
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
-<<<<<<< HEAD
 
 # Login
 @app.route('/login', methods=['POST','GET'])
@@ -66,8 +65,6 @@ def register():
 
     return render_template('register.html')
 
-=======
->>>>>>> ef7b86e4b1480efa316b4be7c88045958ad0f395
 
 '''
 Search function
@@ -111,31 +108,11 @@ def hospitalProfile(hospitalName):
     # get the website, phone number, addy of hospital
     return render_template('baseHospital.html', hName=hospitalName)
 
-<<<<<<< HEAD
 
 '''
 #########################################################################################################################################
 #########################################################################################################################################
 '''
-=======
-@app.route('/admin')
-def hospital_admin():
-    if 'username' in session:
-        return render_template("form.html")
-    redirect(url_for('index'))
-
-@app.route('/result',methods = ['POST', 'GET'])
-def result():
-   if request.method == 'POST':
-      result = request.form
-      treatmentArray = []
-      pippo =  request.form.to_dict()
-      for x in pippo.values():
-        treatmentArray.append(x)
-      print(session['username'])
-      '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
-      return render_template('form.html',result = result)
->>>>>>> ef7b86e4b1480efa316b4be7c88045958ad0f395
 
 #
 # Supplementary functions section
