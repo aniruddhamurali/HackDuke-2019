@@ -2,16 +2,42 @@
 <h1>Hospitals</h1>
 {% for hospital in wHospitals %}
 <div>
-    <p>
-        Wait Hospital: {{ hospital[0] }}
-    </p>
+    <div class="provider">
+        <h2>
+            Wait Hospital: {{ hospital[0] }}
+        </h2>
+        <p>
+            Address: {{ hospital[2] }}
+        </p>
+        <p>
+            {{ hospital[6] }}
+        </p>
+        <br>
+    </div>
 </div>
 {% endfor %} 
 {% for hospital in cHospitals %}
 <div>
-    <p>
-        Cost Hospital: {{ hospital[0] }}
-    </p>
+    <div class="provider">
+        <h2>
+            Cost Hospital: {{ hospital[0] }}
+        </h2>
+        <table>
+            <tr>
+            <td>
+                $ {{ hospital[6] }}
+            </td>
+            <td>
+                Address: {{ hospital[2] }}
+            </td>
+            </tr>
+        </table>
+        <p>
+            {{ hospital[7] }}
+        </p>
+        <br>
+    </div>
+    <br>
 </div>
 {% endfor %}
 {% endblock %}
