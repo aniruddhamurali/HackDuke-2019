@@ -26,9 +26,8 @@
   function showPosition(position) {
     x.innerHTML = "Latitude: " + position.coords.latitude +
       "<br>Longitude: " + position.coords.longitude;
-    console.log(position.coords.latitude);
+    console.log("Reached showPosition() " + position.coords.latitude);
     document.getElementById("lat").value = position.coords.latitude;
-    console.log(document.getElementById("lat").value)
     document.getElementById("lng").value = position.coords.longitude;
   }
 </script>

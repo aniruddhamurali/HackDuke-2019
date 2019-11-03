@@ -21,17 +21,6 @@ API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
-<<<<<<< HEAD
-=======
-#google_maps = GoogleMaps(API_KEY2)
-
-#address = "New York City Wall Street 12"
-#globalName = None
-
-#google_maps = GoogleMaps(API_KEY2)
-
-#location = google_maps.search(location=address)  # sends search to Google Maps.
->>>>>>> 179d96105e705d47ede6eb34fd172cf9c279f992
 
 '''
 Home page
@@ -144,7 +133,6 @@ def hospital_admin():
         return render_template("form.html")
     redirect(url_for('index'))
 
-<<<<<<< HEAD
 @app.route('/result', methods=['POST', 'GET'])
 def result():
     if request.method == 'POST':
@@ -156,22 +144,6 @@ def result():
         print(session['username'])
         '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
         return render_template('form.html', result=result)
-=======
-@app.route('/result',methods = ['POST', 'GET'])
-def result():
-   if request.method == 'POST':
-      result = request.form
-      treatmentArray = []
-      pippo =  request.form.to_dict()
-      for x in pippo.values():
-        treatmentArray.append(x)
-      db.Admins.update( {"name": globalName}, {"treatments":treatmentArray})
-      return render_template('form.html',result = result)
-
-#
-# Supplementary functions section
-#
->>>>>>> 179d96105e705d47ede6eb34fd172cf9c279f992
 
 @app.route('/determine_location')
 def determine_location():
@@ -180,7 +152,7 @@ def determine_location():
 @app.route('/location', methods=['POST', 'GET'])
 def location():
     if request.method == 'POST':
-        result = request.form
+        location = request.form
         pippo = request.form.to_dict()
         for x in pippo.values():
             coordinates.append(x)
