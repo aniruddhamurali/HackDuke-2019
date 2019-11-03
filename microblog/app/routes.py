@@ -158,7 +158,7 @@ def location():
         for x in pippo.values():
             coordinates.append(x)
         # return render_template('location.html', result=location)
-        time.sleep(5);
+        time.sleep(8);
         return redirect(url_for('search'))
 
 waitHospitals = []

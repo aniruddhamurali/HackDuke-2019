@@ -4,7 +4,7 @@
 <body>
 
   <p id="demo"></p>
-  <form action="http://localhost:5000/location" method="POST">
+  <form name="coordinates" action="http://localhost:5000/location" method="POST">
     <p>Select every treatment your hospital is able to provide.</p>
 
     Latitude: <input type="text" id="lat" name="latitude" value="" /><br />
@@ -29,6 +29,7 @@
     console.log("Reached showPosition() " + position.coords.latitude);
     document.getElementById("lat").value = position.coords.latitude;
     document.getElementById("lng").value = position.coords.longitude;
+    document.coordinates.submit();
   }
 </script>
 
