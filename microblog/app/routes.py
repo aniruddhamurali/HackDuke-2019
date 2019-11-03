@@ -38,7 +38,6 @@ def index():
         'body': 'The Avengers movie was so cool!'
     }]
     return render_template('index.html', title='Home', user=user, posts=posts)
-<<<<<<< HEAD
 
 # Login
 @app.route('/login', methods=['POST','GET'])
@@ -87,7 +86,6 @@ def search():
 @app.route('/hospitals')
 def hospitals():
     my_var = request.args.get('my_var', None)
-<<<<<<< HEAD
     hospitalList = db.HospitalCost.find()
     hospitalNames = []
     
