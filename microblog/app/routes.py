@@ -34,17 +34,19 @@ def index():
         }
 
     ]
-    return render_template('loginForm.html', title='Home', user=user, posts=posts)
+    return render_template('index.html', title='Home', user=user, posts=posts)
 
-@app.route('/login', methods=['POST'])
+# Login
+@app.route('/login', methods=['POST','GET'])
 def login():
+    form = LoginForm()
     users = db.Admins
     login_user = users.find_one({'name' : request.form['username']})
 
     if login_user:
         if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
             session['username'] = request.form['username']
-            return redirect(url_for('index'))
+            return redirect(url_for('/'))
 
     return 'Invalid username/password combination'
 
