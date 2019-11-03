@@ -40,32 +40,6 @@ def index():
     }]
     return render_template('index.html', title='Home', user=user, posts=posts)
 
-# Login
-@app.route('/login', methods=['POST','GET'])
-def login():
-    form = LoginForm()
-    users = db.Admins
-    login_user = users.find_one({'name' : request.form['username']})
-
-    if login_user:
-        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
-            session['username'] = request.form['username']
-            return redirect(url_for('/'))
-
-    return 'Invalid username/password combination'
-
-@app.route('/register', methods=['POST', 'GET'])
-def register():
-    if request.method == 'POST':
-        users = db.Admins
-        existing_user = users.find_one({'name' : request.form['username']})
-
-        if existing_user is None:
-            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
-            users.insert({'name' : request.form['username'], 'password' : hashpass})
-            session['username'] = request.form['username']
-            return redirect(url_for('index'))
-
 @app.route('/login', methods=['POST'])
 def login():
     users = db.Admins
