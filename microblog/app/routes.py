@@ -1,12 +1,11 @@
 from app import app
 from app.forms import ConditionForm
-from flask import render_template, flash, redirect, url_for, request, session
+from flask import render_template, flash, redirect, url_for, request
 from flask_pymongo import pymongo
 from googleplaces import GooglePlaces, ranking, types, lang
 import json
 import requests
 import random
-import bcrypt
 
 client = pymongo.MongoClient("mongodb+srv://aliu:aliu@hackduke2019-nkevk.gcp.mongodb.net/test?retryWrites=true&w=majority")
 db = client.inline
@@ -35,6 +34,7 @@ def index():
 
     ]
     return render_template('index.html', title='Home', user=user, posts=posts)
+<<<<<<< HEAD
 
 # Login
 @app.route('/login', methods=['POST','GET'])
@@ -66,6 +66,8 @@ def register():
 
     return render_template('register.html')
 
+=======
+>>>>>>> ef7b86e4b1480efa316b4be7c88045958ad0f395
 
 '''
 Search function
@@ -82,11 +84,21 @@ def search():
             form.condition.data, form.remember_me.data))
         return redirect(url_for('hospitals'))
     return render_template('condition.html', title='Condition', form=form)
-
+    
 @app.route('/hospitals')
 def hospitals():
     my_var = request.args.get('my_var', None)
-    getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
+    waitList = []
+    costList = []
+    for waitHospital in waitHospitals:
+        if my_var.lower() in waitHospital[-1] and waitHospital not in waitHospitals:
+            waitList.append(waitHospital)
+    for costHospital in costHospitals and costHospital not in costHospitals:
+        if my_var.lower() in costHospital[-1]:
+            waitList.append(costHospital)
+    #getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
+    getNearbyHospitals(34.5289,-86.8178, 50000, waitList, hospitalNames)
+    getNearbyHospitals(34.5289,-86.8178, 50000, costList, hospitalNames)
     print("WAIT", waitHospitals, "COST", costHospitals)
     return render_template('hospitals.html', title='Hospitals', wHospitals=waitHospitals, cHospitals=costHospitals)
 
@@ -99,11 +111,31 @@ def hospitalProfile(hospitalName):
     # get the website, phone number, addy of hospital
     return render_template('baseHospital.html', hName=hospitalName)
 
+<<<<<<< HEAD
 
 '''
 #########################################################################################################################################
 #########################################################################################################################################
 '''
+=======
+@app.route('/admin')
+def hospital_admin():
+    if 'username' in session:
+        return render_template("form.html")
+    redirect(url_for('index'))
+
+@app.route('/result',methods = ['POST', 'GET'])
+def result():
+   if request.method == 'POST':
+      result = request.form
+      treatmentArray = []
+      pippo =  request.form.to_dict()
+      for x in pippo.values():
+        treatmentArray.append(x)
+      print(session['username'])
+      '''db.Admins.update( {"name": session['username']}, {"treatments":treatmentArray})'''
+      return render_template('form.html',result = result)
+>>>>>>> ef7b86e4b1480efa316b4be7c88045958ad0f395
 
 #
 # Supplementary functions section
@@ -172,9 +204,9 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
         # we still register it, insert based on waiting time
         else:
             ref = {
-                0: "urgent_care",
-                1: "blood_loss",
-                2: "mental_health",
+                0: "urgent_care", 
+                1: "blood_loss", 
+                2: "mental_health", 
                 3: "infection",
                 4: "pediatrics",
                 5: "poison",
@@ -186,8 +218,9 @@ def getNearbyHospitals(latitude, longitude, sRadius, hospitals, hospitalNames):
             tagsToAdd = []
             for i in range(randNum):
                 newRand = random.randint(0, 8)
-                tagsToAdd.append(ref[newRand])
-
+                if ref[newRand] not in tagsToAdd:
+                    tagsToAdd.append(ref[newRand])
+            
             waitTuple = (
                 name,
                 time,

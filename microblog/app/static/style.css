@@ -1,3 +1,9 @@
 td {
     text-align: center;
 }
+
+.provider {
+    border-top: 2px solid skyblue;
+    width: 100%;
+}
+
