@@ -15,7 +15,7 @@ API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 # Initialising the GooglePlaces constructor
 google_places = GooglePlaces(API_KEY)
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 # @app.route('/index')
 def index():
     user = {'username': 'Miguel'}
@@ -45,13 +45,17 @@ def search():
         return redirect(url_for('hospitals'))
     return render_template('condition.html', title='Condition', form=form)
     
-@app.route('/hospitals', methods=['GET'])
+@app.route('/hospitals')
 def hospitals():
     my_var = request.args.get('my_var', None)
     getNearbyHospitals(34.5289,-86.8178, 50000, hospitalList, hospitalNames)
     print("WAIT", waitHospitals, "COST", costHospitals)
     return render_template('hospitals.html', title='Hospitals', wHospitals=waitHospitals, cHospitals=costHospitals)
 
+@app.route('/hospital/<hName>')
+def hospitalProfile(hospitalName):
+    # get the website, phone number, addy of hospital
+    return render_template('baseHospital.html', hName=hospitalName)
 
 #
 # Supplementary functions section
