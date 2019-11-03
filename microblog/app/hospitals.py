@@ -1,10 +1,6 @@
 from googleplaces import GooglePlaces, types, lang 
 import requests 
 import json 
-    
-# Generate an API key by going to this location 
-# https://cloud.google.com /maps-platform/places/?apis = 
-# places in the google developers 
   
 # Use your own API key for making api request calls 
 #api_key = 'AIzaSyDplP_jSYrYZWCYqfmG_lhFqxQRURA4jUU'
@@ -14,36 +10,14 @@ API_KEY = 'AIzaSyBHGtFlzUzLX4251KTO3IBfen2no0Jllic'
 google_places = GooglePlaces(API_KEY) 
 
 
-'''source = input() 
-  
-# Take destination as input 
-dest = input() 
-  
-# url variable store url  
-url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
-  
-# return response object 
-r = requests.get(url + 'origins=' + source +
-                   '&destinations=' + dest +
-                   '&key=' + API_KEY) 
-                     
-# json method of response object 
-x = r.json() 
-    
-# print the vale of x 
-print(x)'''
-
-#source = input() 
-
 coordinates = {'lat': 36.4089, 'lng': -78.3178}
+# coordinates = {'lat': 36.0012, 'lng': -78.9400}
 
 # call the function nearby search with 
 # the parameters as longitude, latitude, radius and type of place
 query_result = google_places.nearby_search( 
-        # lat_lng ={'lat': 46.1667, 'lng': -1.15}, 
-        #lat_lng ={'lat': 36.4089, 'lng': -78.3178},
         lat_lng = coordinates, 
-        radius = 5000, 
+        radius = 50000, 
         types =[types.TYPE_HOSPITAL])
 
 
@@ -51,38 +25,50 @@ query_result = google_places.nearby_search(
 # If any attributions related with search results print them 
 if query_result.has_attributions: 
     print(query_result.html_attributions) 
-  
-print(query_result)
+
+hospitals = []
+hospitalNames = []
+with open('cleanedHospInfo.csv') as file {
+    for line in file:
+        line = line.split(',')
+        hospitals.append((line[0].lower(), line[1], line[2], line[3]))
+        hospitalNames.append(line[0].lower())
+}
+
+closeHospitals = []
   
 # Iterate over the search results 
 for place in query_result.places: 
-    # print(type(place)) 
-    # place.get_details() 
-    '''print(place.name) 
+    print(place.name) 
     print("Latitude", place.geo_location['lat']) 
     print("Longitude", place.geo_location['lng'])
-    print(place)'''
-    
-    # Take destination as input 
-    dest = place.name 
+    print(place)
     
     # url variable store url  
     url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
     
-    # return response object 
-    #print(dest)
-    
     r = requests.get(url + 'origins=' + str(coordinates['lat']) + ',' + str(coordinates['lng']) +
                     '&destinations=' + str(place.geo_location['lat']) + ',' + str(place.geo_location['lng']) +
                     '&key=' + API_KEY)
-
-    '''print(url + 'origins=' + str(coordinates['lat']) + ',' + str(coordinates['lng']) +
-                    '&destinations=' + str(place.geo_location['lat']) + ',' + str(place.geo_location['lng']) +
-                    '&key=' + API_KEY)'''  
-                        
+             
     # json method of response object 
-    x = r.json() 
-        
-    # print the vale of x 
+    x = r.json()
+
+    name = place.name
+    address = x['destination_addresses'][0]
+    distance = x['rows'][0]['elements'][0]['distance']['text']
+    time = x['rows'][0]['elements'][0]['duration']['text']
     print(x)
     print()
+
+    print(distance)
+    print(time)
+
+    if name.lower() in hospitalNames:
+        index = hospitalNames.index(name)
+        hospital = hospitals[index]
+        # Hospital name, price, latitude, longitude, hospital, address, distance, time
+        closeHospitals.append((hospital[0], hospital[1], hospital[2], hospital[3], address, distance, time))
+        print(hospital[0], hospital[1], hospital[2], hospital[3], address, distance, time))
+        
+    
